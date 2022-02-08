@@ -3,15 +3,8 @@
  * 
  * This code is meant for our EV GO-Kart
  * It uses an optocoupler to measure the speed with a hollowed out disk.
- * 
- * 
- * http://www.cesarebrizio.it/Arduino/Speedometer.html
- * http://tronixstuff.com/tutorials > chapter 37
- *   
  *   
  */
- 
-// include the library code:
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
@@ -19,8 +12,8 @@ LiquidCrystal_I2C lcd(0x3F,16,2);  // set the LCD address to 0x27 for a 16 chars
  
 float start, finished;
 float elapsed, time;
-float circMetric=0.50; // wheel circumference (in meters)
-float circImperial; // using 1 kilometer = 0.621371192 miles
+float circMetric=0.50; // wheel circumference (meters)
+float circImperial; // 1 kilometer = 0.621371192 miles
 float speedk, speedm;    // holds calculated speed vales in metric and imperial
  
 void setup()
@@ -28,26 +21,23 @@ void setup()
   // convert metric to imperial for MPH calculations
   circImperial=circMetric*.62137; 
 
-  // the syntax with digitalPinToInterrupt should allow portability
-  //among different Arduino models - see https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
-  attachInterrupt(digitalPinToInterrupt(2), speedCalc, RISING); // interrupt called when sensors sends digital 2 high (every wheel rotation)
-  //attachInterrupt(0, speedCalc, RISING); // interrupt called when sensors sends digital 2 high (every wheel rotation)
+  // Careful, interrupts might be different depending on the arduino model!
+  attachInterrupt(digitalPinToInterrupt(2), speedCalc, RISING);
 
-  //start now (it will be reset by the interrupt after calculating revolution time)
-  start=millis(); 
+  start=millis(); //start now (it will be reset by the interrupt after calculating revolution time)
 
-  // Print a transitory message to the LCD.
+  // Welcome message
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0,0);
   lcd.print("SHU - SPEEDOMETER");
-  delay(1000); //just to allow you to read the initialization message
+  delay(1000);
 
-  // top serial dialogue speed improves precision
+  // also displaying the speed over serial
   Serial.begin(9600);
 }
 
-//Function called by the interrupt attached to the sensor
+// Function called by the interrupt attached to the sensor
 // It is called once every detection of a "hole" on the speedometer wheel.
 void speedCalc()
 {
@@ -81,6 +71,6 @@ void loop()
   lcd.print(int(elapsed));
   lcd.print(" ms/rev      ");
 
-  // adjust for personal preference to minimise flicker
+  // Because of the interrupt the screen might flicker. This delay can help a little (screen refresh speed)
   delay(250); 
 }
