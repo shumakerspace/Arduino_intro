@@ -1,0 +1,16 @@
+
+Compile the C to an OBJ file
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o blink_c.o blink_c.c
+
+OBJ TO C
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p blink_c.o -o blink_c
+
+HEX CREATION
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom blink_c blink_c.hex
+
+AVRDUDE UPLOAD
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avrdude -p m328p -P /dev/tty.usbmodem14201 -c avrisp -b 19200 -C /Users/bleimlingc/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf -U flash:w:/Users/bleimlingc/GitHub/arduino_intro/DIYduino/Bare\ Metal/Blink/blink_c.hex 
