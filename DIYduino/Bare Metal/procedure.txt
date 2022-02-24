@@ -1,0 +1,58 @@
+
+You need  to know the location of your avrdude, avr-objcopy and avr-gcc binaries.
+	Mac: /Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/
+	Windows: C:>Program Files (x86)\Arduino\harware\tools\avr\bin
+	Linux: avrdude
+
+Location of avrdude.conf
+	Mac: /Users/bleimlingc/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/
+	Windows: C:>Program Files (x86)\Arduino\harware\tools\avr\etc
+	Linux: /etc/
+
+Port:
+	Mac: ls/dev/tty.*
+	Windows: COMX -> look it up in the arduino software
+	Linux: ls /dev/*
+
+
+Compile the C to an OBJ file
+----------------------------
+avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o blink_c.o blink_c.c
+
+
+OBJ TO BIN
+----------------------------
+avr-gcc -mmcu=atmega328p blink_c.o -o blink_c
+
+
+HEX CREATION
+----------------------------
+avr-objcopy -O ihex -R .eeprom blink_c blink_c.hex
+
+
+AVRDUDE UPLOAD
+----------------------------
+avrdude -p m328p -P /dev/XXXXXXXX -c avrisp -b 19200 -C avrdude.conf -U flash:w:blink_c.hex 
+
+
+
+
+
+
+
+Example On Cedric's Mac
+
+C to OBJ
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o blink_c.o blink_c.c
+
+OBJ TO BIN
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-gcc -mmcu=atmega328p blink_c.o -o blink_c
+
+HEX CREATION
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom blink_c blink_c.hex
+
+AVRDUDE UPLOAD
+
+/Applications/Arduino.app/Contents/Java/hardware/tools/avr/bin/avrdude -p m328p -P /dev/tty.usbmodem14201 -c avrisp -b 19200 -C /Users/bleimlingc/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf -U flash:w:/Users/bleimlingc/GitHub/arduino_intro/DIYduino/Bare\ Metal/Blink/blink_c.hex 
